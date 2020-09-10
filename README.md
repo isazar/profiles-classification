@@ -2,10 +2,10 @@
 
 Classification of profiles from:
 
-    1. [x]Argo (Rosso et al., 2020)
-    2. [] seal and hydrographic data 
-    3. [] and model output, 
-- [x] Finish my changes
+- [x] Argo (Rosso et al., 2020)
+- [ ] seal and hydrographic data 
+- [ ] and model output, 
+
 using a **Profile Classification Model** (PCM; Maze et al., 2017).
 
 Few useful libraries that I use in the scripts:
