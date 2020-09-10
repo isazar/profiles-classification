@@ -9,11 +9,10 @@ Classification of profiles from:
 using a **Profile Classification Model** (PCM; Maze et al., 2017).
 
 Few useful libraries that I use in the scripts:
-
-    - [Gibbs-SeaWater Oceanographic Toolbox](http://www.teos-10.org/software.htm) contains the TEOS-10 subroutines for evaluating the thermodynamic properties of pure water
-    - [cmocean](https://matplotlib.org/cmocean/) for nice colormaps. Cmocean is found also in [Palettable](https://jiffyclub.github.io/palettable/), which contains different and very cool colormaps (I really like [colorbrewer](http://colorbrewer2.org)). For installing the libraries using Anaconda: e.g. Palettable: conda install -c conda-forge palettable
-    - [scikit-learn](https://scikit-learn.org/stable/) for machine learning algorithms
-    - numpy, scipy and matplotlib.
+- [Gibbs-SeaWater Oceanographic Toolbox](http://www.teos-10.org/software.htm) contains the TEOS-10 subroutines for evaluating the thermodynamic properties of pure water
+- [cmocean](https://matplotlib.org/cmocean/) for nice colormaps. Cmocean is found also in [Palettable](https://jiffyclub.github.io/palettable/), which contains different and very cool colormaps (I really like [colorbrewer](http://colorbrewer2.org)). For installing the libraries using Anaconda: e.g. Palettable: conda install -c conda-forge palettable
+- [scikit-learn](https://scikit-learn.org/stable/) for machine learning algorithms
+- numpy, scipy and matplotlib.
     
 
 ### References
