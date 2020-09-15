@@ -11,7 +11,7 @@ from sklearn import metrics
 # Compression level for the dimensionality reduction
 maxvar      = 99.9
 
-def compute_PCA(Xn,scaler,reducer,train,comp,pr,plotdir):
+def compute_PCA(Xn,scaler,reducer,train,comp,pr,plotdir,showplt):
     if train:
         # Compute the EOFs from X normalized
         reducer = PCA(n_components=maxvar/100,svd_solver='full')
@@ -62,12 +62,11 @@ def compute_PCA(Xn,scaler,reducer,train,comp,pr,plotdir):
     print "\nWe reduced the dimensionality of the problem from 2000 depth levels down to %i PCs\n"%(Nc)
 
     style = ['-','--','.']
-    if train and 'Q' not in comp:
+    if train and showplt and 'Q' not in comp :
         fig, ax = plt.subplots(figsize=(7,7))#, dpi=300, facecolor='w', edgecolor='k', sharey='row')
         xl = np.max(np.abs([np.min(EOFs_real),np.max(EOFs)]))
         for ie in range(0,min(2,EOFs.shape[0])):
         	ax.plot(np.transpose(EOFs[ie,:]),pr,linestyle=style[ie],c='k',label="PCA-%i"%(ie+1),linewidth=2)
-        ax.plot(np.transpose(EOFs[0,:]),pr,linestyle=style[ie],c='r',label="PCA-%i"%(ie+1),linewidth=2)
         #ax[iax].set_xlim(1.1*np.array([-xl,xl]))
         if 'Temp' in comp:
             ax.legend(loc=2,fancybox=True)
@@ -140,8 +139,8 @@ def test_small_sample_BIC(lon,lat,PT,SA,PTn,SAn,PTtr_r,SAtr_r,scalerPT,scalerSA,
         i1 = np.where(~np.isnan(rdm[kk,:]))[:][0]
         irdm = [int(rr) for rr in rdm[kk,i1]]
         plt.figure(1)
-        plt.scatter(lon[irdm],lat[irdm],c=col[kk],s=50,marker='*',edgecolor='None',alpha=0.5)
-
+        plt.scatter(lon[irdm],lat[irdm],c=col[kk],s=5,marker='*',edgecolor='None',alpha=0.5)
+        plt.title('coverage of randomly chosen locations')
     plt.show()
 
     bicV        = np.nan*np.ones((10,29))
@@ -152,8 +151,8 @@ def test_small_sample_BIC(lon,lat,PT,SA,PTn,SAn,PTtr_r,SAtr_r,scalerPT,scalerSA,
         SAn_tr  = SAn[irdm,:]
 
         # reduce the training set
-        [Nc_PT,V_PT,EOFs_PT,EOFs_real_PT,PTtr_r,reducerPT] = compute_PCA(PTn_tr,scalerPT,None,1,'Potential Temperature',press[idz1:idz2],plotdir)
-        [Nc_SA,V_SA,EOFs_SA,EOFs_real_SA,SAtr_r,reducerSA] = compute_PCA(SAn_tr,scalerSA,None,1,'Absolute Salinity',press[idz1:idz2],plotdir)
+        [Nc_PT,V_PT,EOFs_PT,EOFs_real_PT,PTtr_r,reducerPT] = compute_PCA(PTn_tr,scalerPT,None,1,'Potential Temperature',press[idz1:idz2],plotdir,False)
+        [Nc_SA,V_SA,EOFs_SA,EOFs_real_SA,SAtr_r,reducerSA] = compute_PCA(SAn_tr,scalerSA,None,1,'Absolute Salinity',press[idz1:idz2],plotdir,False)
 
         # select only the first 2 PCAs of PT and SA to build the array for the gmm algorithm
         # 2 PCAs
