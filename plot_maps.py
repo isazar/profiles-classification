@@ -2,6 +2,7 @@ import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import netCDF4 as nc
 
 from palettable.colorbrewer.qualitative import Accent_4 as acc
 from palettable.colorbrewer.qualitative import Accent_5 as acc5
@@ -25,12 +26,14 @@ import plot_maps
 
 plotdir     = fold_paths.plotdir
 ETOPO       = fold_paths.ETOPO
+RTopo       = fold_paths.RTopo
 floatdir    = fold_paths.floatdir
 dirRdm      = fold_paths.dirRdm
 folder_argo = fold_paths.folder_argo
 
 # map of clusters
 #bathy_data  = [XC,YC,bathy,x1,x2,y1,y2,xtix,xtix_l,ytix,ytix_l]
+
 
 def plot_clusters(labels,lon,lat,tit,K,bathy_data,plotdir):
 	XC       = bathy_data[0]
@@ -42,8 +45,14 @@ def plot_clusters(labels,lon,lat,tit,K,bathy_data,plotdir):
 	y2       = bathy_data[6]
 	col      = ['r','c','pink','green','b','orange','yellowgreen','gray','magenta','lime','royalblue','slateblue','crimson','yellowgreen','peru']
 
-	fig,ax   = plt.subplots(figsize=(12,7))
-	ax.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20],colors='k')
+	fig,ax   = plt.subplots(figsize=(7,7))
+	if 'Seals' in plotdir:
+		data        = nc.Dataset(RTopo)
+		ice_topo    = data.variables['ice_base_topography'][:]
+		ax.contourf(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[100,500,1000,2000,3000,4000,5000],cmap=cm.deep)
+		ax.contour(XC[x1:x2], YC[y1:y2],-1.*ice_topo[y1:y2,x1:x2],[10],colors='k')
+	else:
+		ax.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20],colors='k')
 	ax.set_xlim(XC[x1],XC[x2])
 	ax.set_ylim(YC[y1],YC[y2])
 	ax.set_title('Clusters of Argo floats in the Indian sector of the Southern Ocean',fontsize=16)
@@ -53,7 +62,7 @@ def plot_clusters(labels,lon,lat,tit,K,bathy_data,plotdir):
 		ax.plot(np.nan,np.nan,c=col[ii],linewidth=2,label='%i' %(ii+1))
 	leg = ax.legend(loc=3,ncol=3,fancybox=True,framealpha=0.8)
 
-	outfile = os.path.join(plotdir,'gmm_Indian_Ocean_Argo_clusters_map_%s.png' %(tit))
+	outfile = os.path.join(plotdir,'gmm_clusters_map_%s.png' %(tit))
 	plt.savefig(outfile, bbox_inches='tight',dpi=200)
 	plt.show()
 
@@ -74,14 +83,20 @@ def plot_map_prob(lon,lat,labels,post,K,bathy_data,tit,plotdir):
 	fig      = plt.figure(figsize=(25,12))
 	for ii in range(K):
 		ax       = plt.subplot(3,3,ii+1)
-		ax.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20],colors='k')
+		if 'Seals' in plotdir:
+			data        = nc.Dataset(RTopo)
+			ice_topo    = data.variables['ice_base_topography'][:]
+			ax.contourf(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[100,500,1000,2000,3000,4000,5000],cmap="Greys",alpha=0.3)
+			ax.contour(XC[x1:x2], YC[y1:y2],-1.*ice_topo[y1:y2,x1:x2],[10],colors='k')
+		else:
+			ax.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20],colors='k')
 		ax.set_xlim(XC[x1],XC[x2])
 		ax.set_ylim(YC[y1],YC[y2])
 		ax.set_title('k = %i' %(ii+1),fontsize=16)
 		idx = np.where(labels==ii)[0][:]
 		im = ax.scatter(lon[idx],lat[idx],c=post[idx,ii]*100.,s=20,edgecolor='None',alpha=0.7,cmap=acc.mpl_colormap) #acc.mpl_colormap)
 		im.set_clim(60,100)
-		if ii == 8:
+		if ii == K-1:
 			cax     = fig.add_axes([0.15, 0.7, 0.1, 0.01])
 			cbar    = plt.colorbar(im,cax=cax,orientation='horizontal',extend='min')
 			cbar.ax.xaxis.set_tick_params(color='k')
@@ -91,7 +106,7 @@ def plot_map_prob(lon,lat,labels,post,K,bathy_data,tit,plotdir):
 		ax.set_yticks(ytix[::2])
 		ax.set_yticklabels(ytix_l[::2],fontsize=14) 
 
-	outfile = os.path.join(plotdir,'gmm_Indian_Ocean_Argo_clusters_map_post_%s.png' %(tit))
+	outfile = os.path.join(plotdir,'gmm_clusters_map_post_%s.png' %(tit))
 	plt.savefig(outfile, bbox_inches='tight',dpi=200)
 	plt.show()
 	
@@ -134,7 +149,7 @@ def plot_histograms(labels,K,post,tit,plotdir):
 	plt.bar(bins_mid*100.,prob_binT/prob_binT[-1],width=0.1*100,color='#1D98AE',alpha=0.7,align='center')		
 	plt.xlim(30,100)
 
-	outfile = os.path.join(plotdir,'gmm_Indian_Ocean_prob_hist_%s.png' %(tit))
+	outfile = os.path.join(plotdir,'gmm_clusters_prob_hist_%s.png' %(tit))
 	plt.savefig(outfile, bbox_inches='tight',dpi=200)
 	plt.show()
 	
@@ -154,17 +169,23 @@ def plot_fuzzy(K,lon,lat,labels,post,bathy_data,tit,plotdir):
 	cmp      = mpl.colors.ListedColormap(paired.mpl_colors)
 	fig      = plt.figure(figsize=(12,7))
 	ax       = plt.subplot(111)
-	plt.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20,3000],colors='k')
+	if 'Seals' in plotdir:
+		data        = nc.Dataset(RTopo)
+		ice_topo    = data.variables['ice_base_topography'][:]
+		ax.contourf(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[100,500,1000,2000,3000,4000,5000],cmap="Greys",alpha=0.3)
+		ax.contour(XC[x1:x2], YC[y1:y2],-1.*ice_topo[y1:y2,x1:x2],[10],colors='k')
+	else:
+		plt.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20,3000],colors='k')
 	for ii in range(K):
 		tmp = np.delete(range(K),ii)
 		for jj in tmp:
 			id_k = np.where(np.logical_and(labels==ii,post[:,ii]<=0.7))[:][0]  
 			idx  = np.where(post[id_k,jj]>=0.3)[:][0]
-			im=plt.scatter(lon[id_k][idx],lat[id_k][idx],c=post[id_k,ii][idx]*100,s=20,edgecolor='None',alpha=0.8,cmap=cmp)
+			im=plt.scatter(lon[id_k][idx],lat[id_k][idx],c=post[id_k,ii][idx]*100,s=50,edgecolor='None',alpha=0.8,cmap=cmp)
 			im.set_clim(50,70)
 			ax.set_xlim(XC[x1],XC[x2])
 			ax.set_ylim(YC[y1],YC[y2])
-		if ii == 8:
+		if ii == K-1:
 			cax     = fig.add_axes([0.2, 0.25, 0.1, 0.01])
 			cbar    = plt.colorbar(im,cax=cax,orientation='horizontal',extend='min')
 			cbar.ax.xaxis.set_tick_params(color='k')
@@ -175,6 +196,6 @@ def plot_fuzzy(K,lon,lat,labels,post,bathy_data,tit,plotdir):
 			ax.set_yticks(ytix[::2])
 			ax.set_yticklabels(ytix_l[::2],fontsize=14) 
 
-	outfile = os.path.join(plotdir,'gmm_Indian_Ocean_Argo_clusters_map_all_post_fuzzy_%s.png' %(tit))
+	outfile = os.path.join(plotdir,'gmm_clusters_map_all_post_fuzzy_%s.png' %(tit))
 	plt.savefig(outfile, bbox_inches='tight',dpi=200)
 	plt.show()
