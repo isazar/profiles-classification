@@ -55,7 +55,7 @@ def plot_clusters(labels,lon,lat,tit,K,bathy_data,plotdir):
 		ax.contour(XC[x1:x2], YC[y1:y2],bathy[y1:y2,x1:x2],[0,10,20],colors='k')
 	ax.set_xlim(XC[x1],XC[x2])
 	ax.set_ylim(YC[y1],YC[y2])
-	ax.set_title('Clusters of Argo floats in the Indian sector of the Southern Ocean',fontsize=16)
+	ax.set_title('Clusters',fontsize=16)
 	for ii in range(K):
 		idx = np.where(labels==ii)[0][:]
 		ax.scatter(lon[idx],lat[idx],c=col[ii],s=5,edgecolor='None',alpha=0.9)

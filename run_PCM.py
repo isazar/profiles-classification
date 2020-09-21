@@ -109,7 +109,6 @@ def plot_BIC(setM,tit,K,plotdir):
     plt.scatter(n_components_range[K-1],bic[K-1],c='r',s=200,marker='*')
     plt.xlabel('# clusters')
     plt.ylabel('BIC score')
-    plt.title(r"GMM BIC score, using the first 2 PCAs of $\theta$ and salinity (training set)")
     plt.grid("on")
     plt.xlim(-0.01,50.01)
 
