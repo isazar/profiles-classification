@@ -199,3 +199,28 @@ def plot_fuzzy(K,lon,lat,labels,post,bathy_data,tit,plotdir):
 	outfile = os.path.join(plotdir,'gmm_clusters_map_all_post_fuzzy_%s.png' %(tit))
 	plt.savefig(outfile, bbox_inches='tight',dpi=200)
 	plt.show()
+	
+	
+# plot the clusters
+def plot_TS(K,T,S,labels,tit,plotdir):
+	col  = ['r','c','pink','g','b']
+	ss        = np.linspace(32.5,35.5,16)
+	tt        = np.linspace(-3,3,15)
+	ss2, tt2  = np.meshgrid(ss,tt)
+	s0        = gsw.sigma0(ss2,tt2)
+	vd        = np.arange(23,30,0.3) 
+	plt.figure(figsize=(15,10))
+	for ii in range(5):
+		ax  = plt.subplot(2,3,ii+1)
+		idx = np.where(labels==ii)[0][:]
+		ax.scatter(S[idx,:],T[idx,:],color=col[ii],alpha=0.5,s=10)
+		ax.set_xlim(32.5,35.5)
+		ax.set_ylim(-2.2,2)
+		cs  = ax.contour(ss,tt,s0,vd,colors='k',linestyles='dashed',linewidths=0.5,alpha=0.8)
+		plt.clabel(cs,inline=0,fontsize=10)
+		ax.set_xlabel('SA')
+		ax.set_ylabel('CT')
+	outfile = os.path.join(plotdir,'gmm_TS_K%i_%s.png' %(K,tit))
+	plt.savefig(outfile, bbox_inches='tight',dpi=200)
+	plt.show()
+	
