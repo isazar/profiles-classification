@@ -3,7 +3,7 @@
 Classification of profiles from:
 
 - [x] Argo (Rosso et al., 2020)
-- [x] seal and hydrographic data 
+- [x] seal and hydrographic data (Boehme and Rosso, 2021)
 - [ ] and model output, 
 
 using a **Profile Classification Model** (PCM; Maze et al., 2017).
@@ -19,3 +19,5 @@ Few useful libraries that I use in the scripts:
 Maze, G., Mercier, H., & Cabanes, C. (2017). Profile Classification Models. Mercator Ocean Journal, 55, 48–56.
 
 Rosso, I., Mazloff, M. R., Talley, L. D., Purkey, S. G., Freeman, N. M., & Maze, G. (2020). Water mass and biogeochemical variability in the Kerguelen sector of the Southern Ocean: A machine learning approach for a mixing hot spot. Journal of Geophysical Research: Oceans, 125, e2019JC015877. https://doi.org/10.1029/2019JC015877
+
+Boehme, L. and Rosso, I. (2021). Classifying oceanographic structures in the Amundsen Sea, Antarctica. Geophysical Research Letters, p.e2020GL089412. https://doi.org/10.1029/2020GL089412
