@@ -4,7 +4,6 @@ Classification of profiles from:
 
 - [x] Argo (Rosso et al., 2020)
 - [x] seal and hydrographic data (Boehme and Rosso, 2021)
-- [ ] and model output, 
 
 using a **Profile Classification Model** (PCM; Maze et al., 2017).
 
